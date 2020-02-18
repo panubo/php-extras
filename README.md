@@ -6,7 +6,7 @@ Collection of helper PHP classes. These are used by [docker-php-apache](https://
 
 Set the following `php.ini` variable:
 
-`auto_append_file=SSLHelper_prepend.php`
+`auto_prepend_file=SSLHelper_prepend.php`
 
 or for Apache conf:
 
