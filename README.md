@@ -4,7 +4,7 @@ Collection of helper PHP classes. These are used by [docker-php-apache](https://
 
 ## Usage Example
 
-Set the following `php.ini` variable:
+Set the following `php.ini` variable to enable the SSL helper:
 
 `auto_prepend_file=SSLHelper_prepend.php`
 
@@ -18,4 +18,16 @@ or for Apache conf:
       php_value auto_prepend_file "ProxyHelper_prepend.php"
    </If>
 </Directory>
+```
+
+## Docker installation
+
+To install in a Docker image:
+
+```Dockerfile
+# Install PHP Extras
+RUN cd /tmp \
+  && curl -s https://github.com/panubo/php-extras/archive/master.tar.gz -o /tmp/master.tar.gz \
+  && tar --wildcards -C /usr/share/php/ -xvf master.tar.gz --strip 1 '*.php'  \
+  && rm -f /tmp/master.tar.gz
 ```
