@@ -27,7 +27,8 @@ To install in a Docker image:
 ```Dockerfile
 # Install PHP Extras
 RUN cd /tmp \
-  && curl -s https://github.com/panubo/php-extras/archive/master.tar.gz -o /tmp/master.tar.gz \
+  && curl -s -L https://github.com/panubo/php-extras/archive/master.tar.gz -o /tmp/master.tar.gz \
+  && mkdir -p /usr/share/php \
   && tar --wildcards -C /usr/share/php/ -xvf master.tar.gz --strip 1 '*.php'  \
   && rm -f /tmp/master.tar.gz
 ```
