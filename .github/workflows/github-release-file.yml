@@ -1,15 +1,15 @@
-# Source: https://github.com/panubo/reference-github-actions/blob/master/github-release.yml
+# Source: https://github.com/panubo/reference-github-actions/blob/master/github-release-file.yml
 
 on:
   push:
     tags:
       - 'v*'
 
-name: GitHub Release
+name: Create Release
 
 jobs:
   build:
-    name: Create GitHub Release
+    name: Create Release
     runs-on: ubuntu-latest
     steps:
 
@@ -17,6 +17,9 @@ jobs:
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
+
+      - name: Build Package
+        run: make release/php-extras.tar.gz
 
       - name: Get Release Notes
         id: get_release_notes
@@ -28,6 +31,13 @@ jobs:
           echo "NOTES: ${NOTES}"
           echo "::set-output name=notes::${NOTES}"
 
+      - name: Get Package SHA
+        id: get_package_sha
+        run: |
+          SHA=$(sha256sum release/php-extras.tar.gz)
+          echo "SHA: ${SHA}"
+          echo "::set-output name=sha::${SHA}"
+
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -38,8 +48,19 @@ jobs:
           release_name: ${{ github.ref }}
           body: |
             Changes since last release:
-
             ${{ steps.get_release_notes.outputs.notes }}
-
+            -----
+            SHA256: ${{ steps.get_package_sha.outputs.sha }}
           draft: true
           prerelease: false
+
+      - name: Upload Release Asset
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: release/php-extras.tar.gz
+          asset_name: php-extras.tar.gz
+          asset_content_type: application/x-gzip
