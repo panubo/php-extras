@@ -24,11 +24,27 @@ or for Apache conf:
 
 To install in a Docker image:
 
+## Debian
+
 ```Dockerfile
 # Install PHP Extras
-RUN cd /tmp \
-  && curl -s -L https://github.com/panubo/php-extras/archive/master.tar.gz -o /tmp/master.tar.gz \
-  && mkdir -p /usr/share/php \
-  && tar --wildcards -C /usr/share/php/ -xvf master.tar.gz --strip 1 '*.php'  \
-  && rm -f /tmp/master.tar.gz
+RUN set -x \
+  && PHPEXTRAS_VERSION=0.1.0 \
+  && PHPEXTRAS_SHA256=515af5789d5180123acfac9b1090f46e07f355c8df51a34e27ada5f7da0495cc \
+  && if ! command -v wget > /dev/null; then \
+      fetchDeps="${fetchDeps} wget"; \
+     fi \
+  && apt-get update \
+  && apt-get install -y --no-install-recommends ${fetchDeps} \
+  && cd /tmp \
+  && wget -nv https://github.com/panubo/php-extras/releases/download/v${PHPEXTRAS_VERSION}/php-extras.tar.gz \
+  && echo "${PHPEXTRAS_SHA256}  php-extras.tar.gz" > /tmp/SHA256SUM \
+  && ( cd /tmp; sha256sum -c SHA256SUM || ( echo "Expected $(sha256sum php-extras.tar.gz)"; exit 1; )) \
+  && mkdir -p /usr/share/php/ \
+  && tar --no-same-owner -C /usr/share/php/ -zxf php-extras.tar.gz \
+  && rm -rf /tmp/* \
+  && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false ${fetchDeps} \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/* \
+  ;
 ```
