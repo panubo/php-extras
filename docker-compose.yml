@@ -1,8 +1,5 @@
-version: '3.8'
-
 services:
   php:
-    image: php:8.3-fpm # Using a recent PHP FPM image
     build: . # Build from Dockerfile in the current directory
     volumes:
       - .:/app # Mount the current directory into the /app directory in the container
