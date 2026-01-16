@@ -1,22 +1,27 @@
-# Source: https://github.com/panubo/reference-github-actions/blob/master/github-release-file.yml
+# Source: https://github.com/panubo/reference-github-actions/blob/main/github-release.yml
+# Description: Create a GitHub release
+# LICENSE: MIT License, Copyright (c) 2021-2025 Volt Grid Pty Ltd t/a Panubo
+
+name: GitHub Release
 
 on:
   push:
     tags:
-      - 'v*'
+      - "v*"
+  workflow_call:
 
-name: Create Release
+permissions:
+  contents: write
 
 jobs:
   build:
-    name: Create Release
+    name: Create GitHub Release
     runs-on: ubuntu-latest
     steps:
-
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v5
         with:
-          fetch-depth: 0
+          fetch-depth: 0 # Required for git log to work
 
       - name: Build Package
         run: make release/php-extras.tar.gz
@@ -25,18 +30,14 @@ jobs:
         id: get_release_notes
         run: |
           NOTES=$(git log --pretty=format:%s $(git tag --sort=-v:refname | head -1)...$(git tag --sort=-v:refname | head -2 | tail -1) | awk '{ print "-", $0  }')
-          NOTES="${NOTES//'%'/'%25'}"
-          NOTES="${NOTES//$'\n'/'%0A'}"
-          NOTES="${NOTES//$'\r'/'%0D'}"
-          echo "NOTES: ${NOTES}"
-          echo "::set-output name=notes::${NOTES}"
+          printf "notes<<EOF\\n%s\\nEOF\\n" "${NOTES}" >> "$GITHUB_OUTPUT"
 
       - name: Get Package SHA
         id: get_package_sha
         run: |
           SHA=$(sha256sum release/php-extras.tar.gz)
           echo "SHA: ${SHA}"
-          echo "::set-output name=sha::${SHA}"
+          echo "sha=${SHA}" >> "$GITHUB_OUTPUT"
 
       - name: Create Release
         id: create_release
@@ -48,10 +49,11 @@ jobs:
           release_name: ${{ github.ref }}
           body: |
             Changes since last release:
+
             ${{ steps.get_release_notes.outputs.notes }}
             -----
             SHA256: ${{ steps.get_package_sha.outputs.sha }}
-          draft: true
+          draft: false
           prerelease: false
 
       - name: Upload Release Asset
