@@ -1,11 +1,15 @@
 <?php
 
-// Set IP correctly when being proxied
-$_SERVER['REMOTE_ADDR'] = $_SERVER['HTTP_X_REAL_IP'];
+/**
+ * Proxy Helper Prepend Script
+ *
+ * This script is intended to be used with `auto_prepend_file` to initialize
+ * and execute the ProxyHelper class. It adjusts server variables to account for
+ * a reverse proxy setup.
+ */
 
-// Set SSL Status correctly when being proxied
-if ($_SERVER['HTTP_X_FORWARDED_PROTO'] == 'https') {
-    $_SERVER['HTTPS'] = 'on';
-    $_SERVER['REQUEST_SCHEME'] = 'https';
-    $_SERVER['protossl'] = 's';
-}
+// Ensure the main ProxyHelper class file is included.
+require_once('ProxyHelper.php');
+
+// Instantiate the ProxyHelper and run its logic.
+(new ProxyHelper())->run();

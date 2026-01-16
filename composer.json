@@ -1,0 +1,24 @@
+{
+    "name": "panubo/php-extras",
+    "description": "Collection of helper PHP classes for docker-php-apache.",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Panubo",
+            "homepage": "https://panubo.com/"
+        }
+    ],
+    "require-dev": {
+        "phpunit/phpunit": "^12.5"
+    },
+    "autoload": {
+        "files": [
+            "SSLHelper.php",
+            "ProxyHelper.php",
+            "WordPressHelper.php"
+        ]
+    },
+    "scripts": {
+        "test": "phpunit"
+    }
+}
