@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  php:
+    image: php:8.3-fpm # Using a recent PHP FPM image
+    build: . # Build from Dockerfile in the current directory
+    volumes:
+      - .:/app # Mount the current directory into the /app directory in the container
+    working_dir: /app # Set /app as the working directory inside the container
+    # Override the entrypoint to keep the container running for exec commands
+    # This also allows for manual installation of composer if needed, but we'll assume it's pre-installed
+    # or install it in a temporary step if necessary within the container.
+    command: php-fpm # Keep the FPM process running
+    # If you need an interactive shell for debugging:
+    # stdin_open: true
+    # tty: true

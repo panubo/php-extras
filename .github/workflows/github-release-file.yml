@@ -23,6 +23,9 @@ jobs:
         with:
           fetch-depth: 0 # Required for git log to work
 
+      - name: Run Tests
+        run: make test clean
+
       - name: Build Package
         run: make release/php-extras.tar.gz
 
