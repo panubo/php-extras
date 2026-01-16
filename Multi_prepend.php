@@ -11,7 +11,10 @@
  * only accepts a single file path.
  */
 foreach (explode(',', getenv('MULTI_PREPEND')) as $value) {
-    // Trim whitespace from the file path and require it.
-    // If a file does not exist, a fatal error will occur, as expected with require_once.
-    require_once(trim($value));
+    $filePath = trim($value);
+    if (!empty($filePath)) {
+        // Trim whitespace from the file path and require it.
+        // If a file does not exist, a fatal error will occur, as expected with require_once.
+        require_once($filePath);
+    }
 }

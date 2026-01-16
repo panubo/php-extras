@@ -56,10 +56,10 @@ class WordPressHelper
         $value = getenv($key);
         // Check if the environment variable exists and has a value.
         // `false` is returned by getenv() if the variable is not set.
-        if ($value !== false) {
-            // Define the constant. If the constant is already defined,
-            // define() will throw a warning in strict mode, but PHP allows
-            // redefinition in non-strict mode without error.
+        if ($value !== false && !defined($key)) {
+            // Define the constant only if it's not already defined.
+            // This prevents warnings/errors if WordPress or another plugin
+            // has already defined the constant.
             define($key, $value);
         }
     }
