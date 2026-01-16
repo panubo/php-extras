@@ -90,8 +90,8 @@ To install in a Docker image:
 ```Dockerfile
 # Install PHP Extras
 RUN set -x \
-  && PHPEXTRAS_VERSION=0.1.0 \
-  && PHPEXTRAS_SHA256=515af5789d5180123acfac9b1090f46e07f355c8df51a34e27ada5f7da0495cc \
+  && PHPEXTRAS_VERSION=0.2.0 \
+  && PHPEXTRAS_SHA256=1dc751f28ceb799d82c069807df681a9debba2e66e7f37c95ed5e80776f341d1 \
   && if ! command -v wget > /dev/null; then \
       fetchDeps="${fetchDeps} wget"; \
      fi \
